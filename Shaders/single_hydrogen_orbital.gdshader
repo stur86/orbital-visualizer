@@ -114,5 +114,5 @@ void fog() {
 	// Normalization
 	//DENSITY *= 8./(pow(float(n)*a0, 3.0));
 	DENSITY *= float(factorial(n-l-1))/(2.0*float(n*factorial(n+l)));
-	DENSITY *= density_scaling;
+	DENSITY *= density_scaling*100.;
 }

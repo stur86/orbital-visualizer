@@ -27,7 +27,9 @@ func _input(event):
 			hinge.global_rotate(global_transform.basis.y, dr.x*sensitivity)
 			hinge.global_rotate(global_transform.basis.x, dr.y*sensitivity)
 		elif event.button_mask == MOUSE_BUTTON_MASK_RIGHT:
-			translate(Vector3.BACK*(dr.y*sensitivity))
+			var dz = dr.y*sensitivity;
+			dz = max(dz, -position.z)
+			translate(Vector3.BACK*dz)
 			hinge.global_rotate(global_transform.basis.z, dr.x*sensitivity)
 	
 func reset_view():

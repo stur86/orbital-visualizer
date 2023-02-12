@@ -37,7 +37,7 @@ volumetric_fog_detail_spread = 4.0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8oabd"]
 shader = ExtResource("1_x2cs6")
 shader_parameter/side = 20.0
-shader_parameter/density_scaling = 100.0
+shader_parameter/density_scaling = 1.0
 shader_parameter/emission_color = Color(0.152941, 0.607843, 1, 1)
 shader_parameter/a0 = 0.5
 shader_parameter/n = 1
