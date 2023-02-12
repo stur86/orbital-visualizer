@@ -1,26 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://dd6gqmbijjd8a"]
+[gd_scene load_steps=17 format=3 uid="uid://dmbuhs4fponf5"]
 
-[ext_resource type="Script" path="res://Scripts/OrbitCamera.gd" id="1_5nn51"]
 [ext_resource type="Shader" path="res://Shaders/single_hydrogen_orbital.gdshader" id="1_x2cs6"]
-[ext_resource type="Script" path="res://Scripts/Orbital.gd" id="2_jdmdi"]
-
-[sub_resource type="GDScript" id="GDScript_2e28r"]
-script/source = "extends Node3D
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	if Input.is_key_pressed(KEY_1):
-		$Orbital.n = 1
-	if Input.is_key_pressed(KEY_2):
-		$Orbital.n = 2
-		
-"
+[ext_resource type="Script" path="res://Scripts/orbital.gd" id="2_1n136"]
+[ext_resource type="Script" path="res://Scripts/orbit_camera.gd" id="3_ipp1d"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tbjxo"]
 
@@ -56,16 +38,61 @@ variation_embolden = 0.5
 [sub_resource type="LabelSettings" id="LabelSettings_ib7px"]
 font = SubResource("FontVariation_yi4oy")
 
+[sub_resource type="GDScript" id="GDScript_y4vb1"]
+script/source = "extends HBoxContainer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$SpinBox.value = OrbitalControl.orbital.n
+"
+
+[sub_resource type="GDScript" id="GDScript_xkgup"]
+script/source = "extends HBoxContainer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$SpinBox.value = OrbitalControl.orbital.l
+"
+
+[sub_resource type="GDScript" id="GDScript_j8p16"]
+script/source = "extends HBoxContainer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$SpinBox.value = OrbitalControl.orbital.m
+"
+
+[sub_resource type="GDScript" id="GDScript_cytju"]
+script/source = "extends HBoxContainer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$ColorPicker.color = OrbitalControl.orbital.color
+"
+
+[sub_resource type="GDScript" id="GDScript_k0ssn"]
+script/source = "extends HBoxContainer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$SpinBox.value = OrbitalControl.orbital.intensity
+"
+
 [node name="OrbitalVisualization" type="Node3D"]
-script = SubResource("GDScript_2e28r")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_hhbei")
 
 [node name="Orbital" type="FogVolume" parent="."]
 size = Vector3(20, 20, 20)
+shape = 0
 material = SubResource("ShaderMaterial_8oabd")
-script = ExtResource("2_jdmdi")
+script = ExtResource("2_1n136")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Orbital"]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
@@ -75,7 +102,7 @@ mesh = SubResource("SphereMesh_ip05k")
 
 [node name="Camera3D" type="Camera3D" parent="CameraHinge"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
-script = ExtResource("1_5nn51")
+script = ExtResource("3_ipp1d")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -107,6 +134,7 @@ vertical_alignment = 1
 [node name="n value" type="HBoxContainer" parent="CanvasLayer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 30
+script = SubResource("GDScript_y4vb1")
 
 [node name="Label" type="Label" parent="CanvasLayer/Panel/VBoxContainer/n value"]
 custom_minimum_size = Vector2(30, 0)
@@ -117,12 +145,13 @@ text = "n"
 layout_mode = 2
 min_value = 1.0
 max_value = 7.0
-value = 1.0
+value = 2.0
 rounded = true
 
 [node name="l value" type="HBoxContainer" parent="CanvasLayer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 30
+script = SubResource("GDScript_xkgup")
 
 [node name="Label" type="Label" parent="CanvasLayer/Panel/VBoxContainer/l value"]
 custom_minimum_size = Vector2(30, 0)
@@ -137,6 +166,7 @@ rounded = true
 [node name="m value" type="HBoxContainer" parent="CanvasLayer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 30
+script = SubResource("GDScript_j8p16")
 
 [node name="Label" type="Label" parent="CanvasLayer/Panel/VBoxContainer/m value"]
 custom_minimum_size = Vector2(30, 0)
@@ -158,6 +188,7 @@ vertical_alignment = 1
 [node name="Color value" type="HBoxContainer" parent="CanvasLayer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 30
+script = SubResource("GDScript_cytju")
 
 [node name="Label" type="Label" parent="CanvasLayer/Panel/VBoxContainer/Color value"]
 custom_minimum_size = Vector2(100, 0)
@@ -171,6 +202,7 @@ layout_mode = 2
 [node name="Intensity value" type="HBoxContainer" parent="CanvasLayer/Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 30
+script = SubResource("GDScript_k0ssn")
 
 [node name="Label" type="Label" parent="CanvasLayer/Panel/VBoxContainer/Intensity value"]
 custom_minimum_size = Vector2(100, 0)

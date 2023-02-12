@@ -1,4 +1,5 @@
 extends FogVolume
+class_name Orbital
 
 @export var a0: float = 0.5:
 	get:
@@ -52,3 +53,6 @@ extends FogVolume
 	set(value):
 		intensity = value
 		material.set_shader_parameter("density_scaling", intensity)
+
+func _enter_tree():
+	OrbitalControl.orbital = self
