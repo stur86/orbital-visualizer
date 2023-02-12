@@ -45,6 +45,9 @@ script/source = "extends HBoxContainer
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$SpinBox.value = OrbitalControl.orbital.n
+
+func _on_spin_box_value_changed(value):
+	OrbitalControl.set_n(int(value))
 "
 
 [sub_resource type="GDScript" id="GDScript_xkgup"]
@@ -54,6 +57,14 @@ script/source = "extends HBoxContainer
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$SpinBox.value = OrbitalControl.orbital.l
+	OrbitalControl.new_quantum_numbers.connect(_update_range)
+	
+func _update_range(n, l, m):
+	$SpinBox.max_value = n-1
+
+
+func _on_spin_box_value_changed(value):
+	OrbitalControl.set_l(int(value))
 "
 
 [sub_resource type="GDScript" id="GDScript_j8p16"]
@@ -63,6 +74,14 @@ script/source = "extends HBoxContainer
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$SpinBox.value = OrbitalControl.orbital.m
+	OrbitalControl.new_quantum_numbers.connect(_update_range)
+
+func _update_range(n, l, m):
+	$SpinBox.max_value = l
+	$SpinBox.min_value = -l
+
+func _on_spin_box_value_changed(value):
+	OrbitalControl.set_m(int(value))
 "
 
 [sub_resource type="GDScript" id="GDScript_cytju"]
@@ -72,6 +91,10 @@ script/source = "extends HBoxContainer
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$ColorPicker.color = OrbitalControl.orbital.color
+
+
+func _on_color_picker_color_changed(color):
+	OrbitalControl.orbital.color = color
 "
 
 [sub_resource type="GDScript" id="GDScript_k0ssn"]
@@ -81,6 +104,9 @@ script/source = "extends HBoxContainer
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$SpinBox.value = OrbitalControl.orbital.intensity
+
+func _on_spin_box_value_changed(value):
+	OrbitalControl.orbital.intensity = value
 "
 
 [node name="OrbitalVisualization" type="Node3D"]
@@ -214,3 +240,9 @@ layout_mode = 2
 max_value = 3.0
 step = 0.1
 allow_greater = true
+
+[connection signal="value_changed" from="CanvasLayer/Panel/VBoxContainer/n value/SpinBox" to="CanvasLayer/Panel/VBoxContainer/n value" method="_on_spin_box_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Panel/VBoxContainer/l value/SpinBox" to="CanvasLayer/Panel/VBoxContainer/l value" method="_on_spin_box_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Panel/VBoxContainer/m value/SpinBox" to="CanvasLayer/Panel/VBoxContainer/m value" method="_on_spin_box_value_changed"]
+[connection signal="color_changed" from="CanvasLayer/Panel/VBoxContainer/Color value/ColorPicker" to="CanvasLayer/Panel/VBoxContainer/Color value" method="_on_color_picker_color_changed"]
+[connection signal="value_changed" from="CanvasLayer/Panel/VBoxContainer/Intensity value/SpinBox" to="CanvasLayer/Panel/VBoxContainer/Intensity value" method="_on_spin_box_value_changed"]
