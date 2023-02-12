@@ -18,6 +18,8 @@ extends FogVolume
 		
 		material.set_shader_parameter("n", n)
 		material.set_shader_parameter("side", L)
+		
+		# Also set l
 
 @export var l: int = 0:
 	get:

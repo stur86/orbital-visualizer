@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dd6gqmbijjd8a"]
+[gd_scene load_steps=13 format=3 uid="uid://dd6gqmbijjd8a"]
 
 [ext_resource type="Script" path="res://Scripts/OrbitCamera.gd" id="1_5nn51"]
 [ext_resource type="Shader" path="res://Shaders/single_hydrogen_orbital.gdshader" id="1_x2cs6"]
@@ -50,6 +50,12 @@ albedo_color = Color(0.941176, 0, 0, 1)
 [sub_resource type="SphereMesh" id="SphereMesh_ip05k"]
 material = SubResource("StandardMaterial3D_fpkg7")
 
+[sub_resource type="FontVariation" id="FontVariation_yi4oy"]
+variation_embolden = 0.5
+
+[sub_resource type="LabelSettings" id="LabelSettings_ib7px"]
+font = SubResource("FontVariation_yi4oy")
+
 [node name="OrbitalVisualization" type="Node3D"]
 script = SubResource("GDScript_2e28r")
 
@@ -70,3 +76,109 @@ mesh = SubResource("SphereMesh_ip05k")
 [node name="Camera3D" type="Camera3D" parent="CameraHinge"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
 script = ExtResource("1_5nn51")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="Panel" parent="CanvasLayer"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 300.0
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OrbitalHeader" type="Label" parent="CanvasLayer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Orbital properties"
+label_settings = SubResource("LabelSettings_ib7px")
+vertical_alignment = 1
+
+[node name="n value" type="HBoxContainer" parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="CanvasLayer/Panel/VBoxContainer/n value"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "n"
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/Panel/VBoxContainer/n value"]
+layout_mode = 2
+min_value = 1.0
+max_value = 7.0
+value = 1.0
+rounded = true
+
+[node name="l value" type="HBoxContainer" parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="CanvasLayer/Panel/VBoxContainer/l value"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "l"
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/Panel/VBoxContainer/l value"]
+layout_mode = 2
+max_value = 7.0
+rounded = true
+
+[node name="m value" type="HBoxContainer" parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="CanvasLayer/Panel/VBoxContainer/m value"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "m"
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/Panel/VBoxContainer/m value"]
+layout_mode = 2
+max_value = 7.0
+rounded = true
+
+[node name="VisualizationHeader" type="Label" parent="CanvasLayer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Visualization properties"
+label_settings = SubResource("LabelSettings_ib7px")
+vertical_alignment = 1
+
+[node name="Color value" type="HBoxContainer" parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="CanvasLayer/Panel/VBoxContainer/Color value"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Color"
+
+[node name="ColorPicker" type="ColorPickerButton" parent="CanvasLayer/Panel/VBoxContainer/Color value"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="Intensity value" type="HBoxContainer" parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="CanvasLayer/Panel/VBoxContainer/Intensity value"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Intensity"
+
+[node name="SpinBox" type="SpinBox" parent="CanvasLayer/Panel/VBoxContainer/Intensity value"]
+layout_mode = 2
+max_value = 3.0
+step = 0.1
+allow_greater = true
