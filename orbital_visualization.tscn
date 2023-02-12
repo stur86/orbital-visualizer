@@ -1,0 +1,72 @@
+[gd_scene load_steps=11 format=3 uid="uid://dd6gqmbijjd8a"]
+
+[ext_resource type="Script" path="res://Scripts/OrbitCamera.gd" id="1_5nn51"]
+[ext_resource type="Shader" path="res://Shaders/single_hydrogen_orbital.gdshader" id="1_x2cs6"]
+[ext_resource type="Script" path="res://Scripts/Orbital.gd" id="2_jdmdi"]
+
+[sub_resource type="GDScript" id="GDScript_2e28r"]
+script/source = "extends Node3D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	if Input.is_key_pressed(KEY_1):
+		$Orbital.n = 1
+	if Input.is_key_pressed(KEY_2):
+		$Orbital.n = 2
+		
+"
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tbjxo"]
+
+[sub_resource type="Sky" id="Sky_pk02w"]
+sky_material = SubResource("ProceduralSkyMaterial_tbjxo")
+
+[sub_resource type="Environment" id="Environment_hhbei"]
+background_mode = 2
+sky = SubResource("Sky_pk02w")
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0
+volumetric_fog_detail_spread = 4.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8oabd"]
+shader = ExtResource("1_x2cs6")
+shader_parameter/side = 20.0
+shader_parameter/density_scaling = 100.0
+shader_parameter/emission_color = Color(0.152941, 0.607843, 1, 1)
+shader_parameter/a0 = 0.5
+shader_parameter/n = 1
+shader_parameter/l = 0
+shader_parameter/m = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fpkg7"]
+albedo_color = Color(0.941176, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_ip05k"]
+material = SubResource("StandardMaterial3D_fpkg7")
+
+[node name="OrbitalVisualization" type="Node3D"]
+script = SubResource("GDScript_2e28r")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_hhbei")
+
+[node name="Orbital" type="FogVolume" parent="."]
+size = Vector3(20, 20, 20)
+material = SubResource("ShaderMaterial_8oabd")
+script = ExtResource("2_jdmdi")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Orbital"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+mesh = SubResource("SphereMesh_ip05k")
+
+[node name="CameraHinge" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="CameraHinge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+script = ExtResource("1_5nn51")
