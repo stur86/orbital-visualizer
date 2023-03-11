@@ -89,9 +89,14 @@ func _enter_tree():
 	OrbitalControl.orbital = self
 	
 func _update_section_plane():
+	var up = Vector3.UP
+	if (section_normal == up):
+		up = Vector3.FORWARD
+	
 	$SectionPlane.visible = enable_section
 	$SectionPlane.look_at_from_position(
 		section_normal.normalized()*section_offset,
-		section_normal.normalized()*(section_offset+1)
+		section_normal.normalized()*(section_offset+1),
+		up
 	)
 	
