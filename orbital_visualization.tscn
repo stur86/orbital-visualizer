@@ -1,8 +1,9 @@
-[gd_scene load_steps=21 format=3 uid="uid://dmbuhs4fponf5"]
+[gd_scene load_steps=23 format=3 uid="uid://dmbuhs4fponf5"]
 
 [ext_resource type="Shader" path="res://Shaders/single_hydrogen_orbital.gdshader" id="1_x2cs6"]
 [ext_resource type="Script" path="res://Scripts/orbital.gd" id="2_1n136"]
 [ext_resource type="Script" path="res://Scripts/orbit_camera.gd" id="3_ipp1d"]
+[ext_resource type="Shader" path="res://Shaders/single_hydrogen_orbital_slice.gdshader" id="3_kq0kt"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gcnpl"]
 sky_top_color = Color(0, 0, 0, 1)
@@ -23,6 +24,7 @@ background_mode = 2
 sky = SubResource("Sky_pk02w")
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.0
+volumetric_fog_length = 32.0
 volumetric_fog_detail_spread = 4.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8oabd"]
@@ -45,7 +47,18 @@ albedo_color = Color(0.686275, 0.0980392, 0.301961, 1)
 [sub_resource type="SphereMesh" id="SphereMesh_ip05k"]
 material = SubResource("StandardMaterial3D_fpkg7")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7de3k"]
+render_priority = 0
+shader = ExtResource("3_kq0kt")
+shader_parameter/side = 20.0
+shader_parameter/density_scaling = 20.0
+shader_parameter/a0 = 0.5
+shader_parameter/n = 2
+shader_parameter/l = 0
+shader_parameter/m = 0
+
 [sub_resource type="PlaneMesh" id="PlaneMesh_7y7ye"]
+material = SubResource("ShaderMaterial_7de3k")
 size = Vector2(20, 20)
 orientation = 2
 

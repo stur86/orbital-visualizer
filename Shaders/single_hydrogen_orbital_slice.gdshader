@@ -1,15 +1,13 @@
-shader_type fog;
+shader_type spatial;
+render_mode unshaded; 
+render_mode cull_disabled;
 
 uniform float side = 20.0;
 uniform float density_scaling = 20.0;
-uniform vec3 emission_color: source_color = vec3(1., 1., 1.);
 uniform float a0 = 1.0;
 uniform int n = 1;
 uniform int l = 0;
 uniform int m = 0;
-uniform bool plane_cut = false;
-uniform vec3 plane_normal = vec3(1., 0., 0.);
-uniform float plane_offset = 0.0;
 
 int factorial_ratio(int n0, int n1) {
 	int ans = 1;
@@ -114,28 +112,16 @@ float density(vec3 pos, int n0, int l0, int m0) {
 	return dens;
 }
 
-void fog() {
+void fragment() {
+	vec3 xyz = (
+		(UV.x-0.5)*MODEL_MATRIX[0].xyz+
+		(UV.y-0.5)*MODEL_MATRIX[1].xyz+
+		MODEL_MATRIX[3].xyz
+	)*side;
 	
-	vec3 xyz = (UVW-vec3(.5, .5, .5))*side;
-
-	// Place fog code here.
-	ALBEDO = vec3(1.,1.,1.);
-	EMISSION = emission_color*10.;
+	float dens = density(xyz/a0, n, l, m)*density_scaling*100.;
 	
-	// Are we using sectioning?
-	bool is_visible = true;
-	if (plane_cut) {
-		// Plane distance?
-		vec3 pn = plane_normal;
-		pn /= length(pn);
-		float plane_z = dot(xyz, pn);
-		is_visible = plane_z >= plane_offset;
-	}
-	
-	if (is_visible) {
-		DENSITY = density(xyz/a0, n, l, m)*density_scaling*100.;		
-	}
-	else {
-		DENSITY = 0.0;
-	}
+	ALBEDO = vec3(smoothstep(0.045, 0.5, dens), 
+	smoothstep(0.4, 1.0, dens), 0);
+	ALPHA = smoothstep(0.5, 0.45, length(xyz)/side)*0.8;
 }

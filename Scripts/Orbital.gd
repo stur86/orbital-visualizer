@@ -7,7 +7,8 @@ class_name Orbital
 		return a0
 	set(value):
 		a0 = value
-		material.set_shader_parameters("a0", a0)
+		material.set_shader_parameter("a0", a0)
+		$SectionPlane.mesh.material.set_shader_parameter("a0", a0)
 
 @export var n: int = 1 :
 	get:
@@ -20,9 +21,10 @@ class_name Orbital
 		
 		material.set_shader_parameter("n", n)
 		material.set_shader_parameter("side", L)
+		$SectionPlane.mesh.size = Vector2.ONE*L
+		$SectionPlane.mesh.material.set_shader_parameter("n", n)
+		$SectionPlane.mesh.material.set_shader_parameter("side", L)
 		
-		# Also set l
-
 @export var l: int = 0:
 	get:
 		return l;
@@ -31,6 +33,7 @@ class_name Orbital
 			return # Unphysical
 		l = value
 		material.set_shader_parameter("l", l)
+		$SectionPlane.mesh.material.set_shader_parameter("l", l)
 
 @export var m: int = 0:
 	get:
@@ -40,6 +43,7 @@ class_name Orbital
 			return
 		m = value
 		material.set_shader_parameter("m", m)
+		$SectionPlane.mesh.material.set_shader_parameter("m", m)
 
 @export var color: Color = Color.DEEP_SKY_BLUE:
 	get: 
@@ -54,6 +58,7 @@ class_name Orbital
 	set(value):
 		intensity = value
 		material.set_shader_parameter("density_scaling", intensity)
+		$SectionPlane.mesh.material.set_shader_parameter("density_scaling", intensity)
 		
 @export var enable_section: bool = false:
 	get:
