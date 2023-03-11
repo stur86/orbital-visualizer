@@ -1,3 +1,4 @@
+@tool
 extends FogVolume
 class_name Orbital
 
@@ -53,6 +54,39 @@ class_name Orbital
 	set(value):
 		intensity = value
 		material.set_shader_parameter("density_scaling", intensity)
+		
+@export var enable_section: bool = false:
+	get:
+		return enable_section
+	set(value):
+		enable_section = value
+		material.set_shader_parameter("plane_cut", enable_section)
+		_update_section_plane()
+
+@export var section_normal: Vector3 = Vector3.RIGHT:
+	get:
+		return section_normal
+	set(value):
+		section_normal = value
+		material.set_shader_parameter("plane_normal", value)
+		_update_section_plane()
+
+@export var section_offset: float = 0.0:
+	get:
+		return section_offset
+	set(value):
+		section_offset = value
+		material.set_shader_parameter("plane_offset", value)
+		_update_section_plane()
+
 
 func _enter_tree():
 	OrbitalControl.orbital = self
+	
+func _update_section_plane():
+	$SectionPlane.visible = enable_section
+	$SectionPlane.look_at_from_position(
+		section_normal.normalized()*section_offset,
+		section_normal.normalized()*(section_offset+1)
+	)
+	

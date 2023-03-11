@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dmbuhs4fponf5"]
+[gd_scene load_steps=21 format=3 uid="uid://dmbuhs4fponf5"]
 
 [ext_resource type="Shader" path="res://Shaders/single_hydrogen_orbital.gdshader" id="1_x2cs6"]
 [ext_resource type="Script" path="res://Scripts/orbital.gd" id="2_1n136"]
@@ -31,9 +31,12 @@ shader_parameter/side = 20.0
 shader_parameter/density_scaling = 1.0
 shader_parameter/emission_color = Color(0.152941, 0.607843, 1, 1)
 shader_parameter/a0 = 0.5
-shader_parameter/n = 2
-shader_parameter/l = 1
+shader_parameter/n = 1
+shader_parameter/l = 0
 shader_parameter/m = 0
+shader_parameter/plane_cut = false
+shader_parameter/plane_normal = Vector3(-1, -1, -1)
+shader_parameter/plane_offset = 0.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fpkg7"]
 diffuse_mode = 3
@@ -41,6 +44,10 @@ albedo_color = Color(0.686275, 0.0980392, 0.301961, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_ip05k"]
 material = SubResource("StandardMaterial3D_fpkg7")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_7y7ye"]
+size = Vector2(20, 20)
+orientation = 2
 
 [sub_resource type="FontVariation" id="FontVariation_yi4oy"]
 variation_embolden = 0.5
@@ -119,6 +126,61 @@ func _on_spin_box_value_changed(value):
 	OrbitalControl.orbital.intensity = value
 "
 
+[sub_resource type="GDScript" id="GDScript_ra0ko"]
+script/source = "extends HBoxContainer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$CheckButton.button_pressed = OrbitalControl.orbital.enable_section
+
+
+func _on_check_button_toggled(button_pressed):
+	OrbitalControl.orbital.enable_section = button_pressed
+"
+
+[sub_resource type="GDScript" id="GDScript_sldt2"]
+script/source = "extends VBoxContainer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$HBoxContainer/X.value = OrbitalControl.orbital.section_normal.x
+	$HBoxContainer/Y.value = OrbitalControl.orbital.section_normal.y
+	$HBoxContainer/Z.value = OrbitalControl.orbital.section_normal.z
+
+
+func _on_x_value_changed(value):
+	var normal = OrbitalControl.orbital.section_normal
+	normal.x = value
+	OrbitalControl.orbital.section_normal = normal
+
+
+func _on_y_value_changed(value):
+	var normal = OrbitalControl.orbital.section_normal
+	normal.y = value
+	OrbitalControl.orbital.section_normal = normal
+
+
+func _on_z_value_changed(value):
+	var normal = OrbitalControl.orbital.section_normal
+	normal.z = value
+	OrbitalControl.orbital.section_normal = normal
+"
+
+[sub_resource type="GDScript" id="GDScript_w7pr8"]
+script/source = "extends HBoxContainer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	$Offset.value = OrbitalControl.orbital.section_offset
+
+
+func _on_offset_value_changed(value):
+	OrbitalControl.orbital.section_offset = value
+"
+
 [node name="OrbitalVisualization" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -133,6 +195,9 @@ script = ExtResource("2_1n136")
 [node name="Nucleus" type="MeshInstance3D" parent="Orbital"]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
 mesh = SubResource("SphereMesh_ip05k")
+
+[node name="SectionPlane" type="MeshInstance3D" parent="Orbital"]
+mesh = SubResource("PlaneMesh_7y7ye")
 
 [node name="CameraHinge" type="Node3D" parent="."]
 
@@ -251,6 +316,76 @@ max_value = 3.0
 step = 0.1
 allow_greater = true
 
+[node name="SectionHeader" type="Label" parent="CanvasLayer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "Section"
+label_settings = SubResource("LabelSettings_ib7px")
+vertical_alignment = 1
+
+[node name="Enable value" type="HBoxContainer" parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+script = SubResource("GDScript_ra0ko")
+
+[node name="Label" type="Label" parent="CanvasLayer/Panel/VBoxContainer/Enable value"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "Enabled"
+
+[node name="CheckButton" type="CheckButton" parent="CanvasLayer/Panel/VBoxContainer/Enable value"]
+layout_mode = 2
+
+[node name="Normal value" type="VBoxContainer" parent="CanvasLayer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+theme_override_constants/separation = 10
+script = SubResource("GDScript_sldt2")
+
+[node name="Label" type="Label" parent="CanvasLayer/Panel/VBoxContainer/Normal value"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "Normal"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Panel/VBoxContainer/Normal value"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="X" type="SpinBox" parent="CanvasLayer/Panel/VBoxContainer/Normal value/HBoxContainer"]
+layout_mode = 2
+step = 0.01
+update_on_text_changed = true
+
+[node name="Y" type="SpinBox" parent="CanvasLayer/Panel/VBoxContainer/Normal value/HBoxContainer"]
+layout_mode = 2
+step = 0.01
+update_on_text_changed = true
+
+[node name="Z" type="SpinBox" parent="CanvasLayer/Panel/VBoxContainer/Normal value/HBoxContainer"]
+layout_mode = 2
+step = 0.01
+update_on_text_changed = true
+
+[node name="Offset value" type="HBoxContainer" parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+script = SubResource("GDScript_w7pr8")
+
+[node name="Label" type="Label" parent="CanvasLayer/Panel/VBoxContainer/Offset value"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "Offset
+"
+
+[node name="Offset" type="SpinBox" parent="CanvasLayer/Panel/VBoxContainer/Offset value"]
+layout_mode = 2
+size_flags_horizontal = 0
+min_value = -1.0
+max_value = 1.0
+step = 0.01
+update_on_text_changed = true
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.701071, 0.470922, -0.535473, 0, 0.750918, 0.660395, 0.713091, -0.462984, 0.526447, 0, 3.45879, 4.89458)
 
@@ -259,3 +394,8 @@ transform = Transform3D(0.701071, 0.470922, -0.535473, 0, 0.750918, 0.660395, 0.
 [connection signal="value_changed" from="CanvasLayer/Panel/VBoxContainer/m value/SpinBox" to="CanvasLayer/Panel/VBoxContainer/m value" method="_on_spin_box_value_changed"]
 [connection signal="color_changed" from="CanvasLayer/Panel/VBoxContainer/Color value/ColorPicker" to="CanvasLayer/Panel/VBoxContainer/Color value" method="_on_color_picker_color_changed"]
 [connection signal="value_changed" from="CanvasLayer/Panel/VBoxContainer/Intensity value/SpinBox" to="CanvasLayer/Panel/VBoxContainer/Intensity value" method="_on_spin_box_value_changed"]
+[connection signal="toggled" from="CanvasLayer/Panel/VBoxContainer/Enable value/CheckButton" to="CanvasLayer/Panel/VBoxContainer/Enable value" method="_on_check_button_toggled"]
+[connection signal="value_changed" from="CanvasLayer/Panel/VBoxContainer/Normal value/HBoxContainer/X" to="CanvasLayer/Panel/VBoxContainer/Normal value" method="_on_x_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Panel/VBoxContainer/Normal value/HBoxContainer/Y" to="CanvasLayer/Panel/VBoxContainer/Normal value" method="_on_y_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Panel/VBoxContainer/Normal value/HBoxContainer/Z" to="CanvasLayer/Panel/VBoxContainer/Normal value" method="_on_z_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Panel/VBoxContainer/Offset value/Offset" to="CanvasLayer/Panel/VBoxContainer/Offset value" method="_on_offset_value_changed"]
